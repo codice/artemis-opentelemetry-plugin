@@ -7,7 +7,7 @@ pipeline {
             skipDefaultCheckout()
     }
     environment {
-        MVN_OPTS = '-Xmx1024M -Xss128M -XX:+UseConcMarkSweepGC '
+        MVN_OPTS = '-Xmx1024M -Xss128M '
         LINUX_MVN_RANDOM = '-Djava.security.egd=file:/dev/./urandom'
     }
     stages {
