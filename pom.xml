@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.codice.opentelemetry.tracing</groupId>
+    <artifactId>opentelemetry-artemis-init</artifactId>
+    <version>${service.version}</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>artemis-opentelemetry-plugin</module>
+        <module>artemis-init-image</module>
+    </modules>
+
+    <properties>
+        <service.version>${artemis.version}-v0.1.0</service.version>
+
+        <docker-registry>docker.io</docker-registry>
+        <artemis.version>2.33.0</artemis.version>
+
+        <!-- skip deploying jar -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+</project>

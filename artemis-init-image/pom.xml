@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codice.opentelemetry.tracing</groupId>
+        <artifactId>opentelemetry-artemis-init</artifactId>
+        <version>${service.version}</version>
+    </parent>
+
+    <artifactId>artemis-init-image</artifactId>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <opentelemetryJarName>opentelemetry-plugin-${project.version}.jar</opentelemetryJarName>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.codice.opentelemetry.tracing</groupId>
+            <artifactId>artemis-opentelemetry-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-jar</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>org.codice.opentelemetry.tracing</groupId>
+                            <artifactId>artemis-opentelemetry-plugin</artifactId>
+                            <version>${project.version}</version>
+                            <type>jar</type>
+                            <overWrite>true</overWrite>
+                            <destFileName>${opentelemetryJarName}</destFileName>
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.43.4</version>
+                <configuration>
+                    <showLogs>true</showLogs>
+                    <images>
+                        <image>
+                            <name>${docker-registry}/codice/opentelemetry-artemis-init</name>
+                            <build>
+                                <dockerFileDir>${project.basedir}</dockerFileDir>
+                                <tags>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                                <args>
+                                    <ARTEMIS_VERSION>${artemis.version}</ARTEMIS_VERSION>
+                                    <OPENTELEMETRY_PLUGIN_JAR>${opentelemetryJarName}
+                                    </OPENTELEMETRY_PLUGIN_JAR>
+                                </args>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>docker-build</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>docker-push</id>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
