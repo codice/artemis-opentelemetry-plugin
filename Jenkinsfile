@@ -7,7 +7,7 @@ pipeline {
             skipDefaultCheckout()
     }
     environment {
-        MVN_OPTS = '-Xmx1024M -Xss128M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC '
+        MVN_OPTS = '-Xmx1024M -Xss128M -XX:+UseConcMarkSweepGC '
         LINUX_MVN_RANDOM = '-Djava.security.egd=file:/dev/./urandom'
     }
     stages {
@@ -24,14 +24,14 @@ pipeline {
             }
         }
         /*
-          Deploy stage will only be executed for deployable branches. These include master and any patch branch matching M.m.x format (i.e. 2.10.x, 2.9.x, etc...).
+          Deploy stage will only be executed for deployable branches. These include main and any patch branch matching M.m.x format (i.e. 2.10.x, 2.9.x, etc...).
           It will also only deploy in the presence of an environment variable JENKINS_ENV = 'prod'. This can be passed in globally from the jenkins master node settings.
         */
         stage('Deploy') {
             when {
                 allOf {
                     expression { env.CHANGE_ID == null }
-                    expression { env.BRANCH_NAME ==~ /((?:\d*\.)?\d*\.x|master)/ }
+                    expression { env.BRANCH_NAME ==~ /((?:\d*\.)?\d*\.x|main)/ }
                     environment name: 'JENKINS_ENV', value: 'prod'
                 }
             }
