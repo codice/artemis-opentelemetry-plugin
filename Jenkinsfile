@@ -1,3 +1,5 @@
+@Library('github.com/connexta/cx-pipeline-library@master') _
+
 pipeline {
     agent { label 'linux-small' }
     options {
@@ -11,6 +13,11 @@ pipeline {
         LINUX_MVN_RANDOM = '-Djava.security.egd=file:/dev/./urandom'
     }
     stages {
+        stage('SetUp') {
+            steps {
+                dockerd {}
+            }
+        }
         stage('Build') {
             steps {
                 retry(3) {
