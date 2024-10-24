@@ -35,7 +35,11 @@ pipeline {
                     environment name: 'JENKINS_ENV', value: 'prod'
                 }
             }
+            environment {
+                DOCKER_LOGIN = credentials('dockerhub-codicebot')
+            }
             steps{
+                sh 'docker login -u $DOCKER_LOGIN_USR -p $DOCKER_LOGIN_PSW'
                 withMaven(maven: 'maven-latest', jdk: 'jdk17', globalMavenSettingsConfig: 'default-global-settings', mavenSettingsConfig: 'codice-maven-settings', mavenOpts: '${LINUX_MVN_RANDOM}') {
                     sh 'mvn deploy -DskipTests=true'
                 }
